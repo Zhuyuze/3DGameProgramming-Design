@@ -1,0 +1,77 @@
+1、简答并用程序验证
+
+游戏对象运动的本质是什么？
+游戏对象坐标的变换
+
+请用三种方法以上方法，实现物体的抛物线运动。（如，修改Transform属性，使用向量Vector3的方法…）
+public class NewBehaviourScript1 : MonoBehaviour {
+	float t = 0;
+	// Use this for initialization
+	void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		t += 0.01f;
+
+		float xspeed = 0.1f *t;
+
+		transform.Translate (Vector3.up * 0.05f);
+		transform.Translate (Vector3.left * xspeed);
+		if (t > 2) {
+			transform.position = new Vector3 (-0.68f, 2f, 13.1f);
+			t = 0;
+		}
+			
+	}
+}
+
+
+transform.position = new Vector3(-0.68f+3f*t,2f+3f*t*t,13.1f);
+
+写一个程序，实现一个完整的太阳系， 其他星球围绕太阳的转速必须不一样，且不在一个法平面上。
+首先创建球体，代表各种天体，并根据恒星，行星，行星的卫星等关系进行分组
+然后利用update在每一帧进行，来递增一个变量t，每个天梯的相对速度矢量可以用t与三角函数进行组合，得到不同的轨迹以及不同速度，法平面等
+仅列举部分天体进行示例：
+public class NewBehaviourScript : MonoBehaviour {
+	float t = 0;
+	// Use this for initialization
+	void Start () {
+		
+	}
+
+	// Update is called once per frame
+	void Update () {
+		t += 0.01f;
+		float yspeed = 0.1f * Mathf.Sin(t);
+		float xspeed = 0.1f * Mathf.Cos(t);
+		float zspeed = xspeed + yspeed;
+		transform.Translate (Vector3.up * yspeed);
+		transform.Translate (Vector3.left * xspeed);
+		transform.Translate (Vector3.forward * (-1.2f*xspeed));
+	}
+}
+
+public class planet1 : MonoBehaviour {
+	float t = 0;
+	// Use this for initialization
+	void Start () {
+
+	}
+
+	// Update is called once per frame
+	void Update () {
+		t += 0.1f;
+		float yspeed = 0.8f * Mathf.Sin(1.2f*t);
+		float xspeed = 0.6f * Mathf.Cos(1.5f*t);
+		float zspeed = xspeed + yspeed;
+		transform.Translate (Vector3.up * yspeed);
+		transform.Translate (Vector3.left * xspeed);
+		transform.Translate (Vector3.forward * -1.2f*xspeed);
+
+	}
+}
+
+同时，也可进行相对物理的仿真，利用k/d^2与当前速度向心力进行比较，并以差值赋予行星与恒星连线方向的加速度并与原速度矢量求和，得到新速度进行update
+
